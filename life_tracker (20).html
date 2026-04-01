@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Daily</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Daily">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="daily.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" id="appIcon">
+<link rel="manifest" id="appManifest">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --white:#ffffff;
+  --bg:#f9f9f9;
+  --border:#efefef;
+  --border2:#dbdbdb;
+  --ink:#111111;
+  --ink2:#262626;
+  --ink3:#737373;
+  --ink4:#a8a8a8;
+  --purple:#7c4dbe;
+  --purple-light:#e8dff7;
+  --purple-mid:#c4a8ee;
+  --purple-dark:#5b34a0;
+  --purple-bg:#f5f0ff;
+}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;background:var(--white)}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.header-logo{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.03em}
+.header-logo span{color:var(--purple)}
+.header-date{font-size:12px;color:var(--ink3);font-weight:400}
+
+/* ── Tab bar ── */
+.tab-bar{display:flex;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;position:sticky;top:53px;z-index:19;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:13px 16px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--ink3);white-space:nowrap;flex-shrink:0;transition:all .15s;letter-spacing:.01em}
+.tab-btn.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:700}
+
+/* ── Feed body ── */
+.feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg)}
+.feed-inner{max-width:600px;margin:0 auto;padding:12px 0 60px}
+
+/* ── Post card (Instagram-style) ── */
+.post{background:var(--white);margin-bottom:8px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.post-header{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.post-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-mid),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.post-title{font-size:14px;font-weight:700;color:var(--ink2)}
+.post-sub{font-size:12px;color:var(--ink3);margin-top:1px}
+.post-body{padding:0 16px 16px}
+
+/* ── Wins checklist ── */
+.wins-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.win-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border-radius:12px;cursor:pointer;transition:background .12s;touch-action:manipulation}
+.win-row.checked{background:var(--purple-bg)}
+.win-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:all .2s}
+.win-row.checked .win-circle{background:var(--purple);border-color:var(--purple)}
+.win-text{font-size:14px;color:var(--ink2);font-weight:500;flex:1}
+.win-row.checked .win-text{color:var(--purple)}
+.add-win-row{display:flex;gap:8px;margin-top:4px}
+.add-win-inp{flex:1;padding:11px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;border:1.5px solid var(--border2);border-radius:12px;background:var(--white);color:var(--ink);outline:none}
+.add-win-inp:focus{border-color:var(--purple-mid)}
+.add-win-inp::placeholder{color:var(--ink4)}
+.add-win-btn{padding:11px 16px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:12px;cursor:pointer;touch-action:manipulation}
+
+/* ── Priority block ── */
+.priority-block{background:var(--purple-bg);border-radius:14px;padding:16px;margin-bottom:8px}
+.block-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.block-prompt{font-size:14px;color:var(--ink3);margin-bottom:10px;line-height:1.5;font-weight:400}
+.ta{width:100%;padding:12px 14px;font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.6;border:1.5px solid var(--border2);border-radius:12px;background:var(--white);color:var(--ink);outline:none;resize:none;transition:border-color .2s}
+.ta:focus{border-color:var(--purple-mid)}
+.ta::placeholder{color:var(--ink4)}
+
+/* ── Action rows ── */
+.action-rows{display:flex;flex-direction:column;gap:8px}
+.action-row{display:flex;align-items:center;gap:10px}
+.action-num{width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.action-inp{flex:1;padding:11px 14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;border:1.5px solid var(--border2);border-radius:12px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s;min-width:0}
+.action-inp:focus{border-color:var(--purple-mid);background:var(--white)}
+.action-inp::placeholder{color:var(--ink4)}
+
+/* ── Mindset block ── */
+.mindset-block{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:10px}
+.mindset-prompt{font-size:15px;font-weight:700;color:var(--ink2);margin-bottom:4px}
+.mindset-prefix{font-size:13px;color:var(--ink3);margin-bottom:8px}
+
+/* ── Primary button ── */
+.primary-btn{width:100%;padding:15px;font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:14px;cursor:pointer;touch-action:manipulation;margin-top:4px;letter-spacing:.01em}
+.primary-btn:active{opacity:.85}
+.save-confirm{font-size:13px;color:var(--purple);text-align:center;opacity:0;transition:opacity .4s;margin-top:8px;font-weight:500}
+
+/* ── Relationships tab ── */
+.contact-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.contact-card{background:var(--bg);border-radius:14px;border:1.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.contact-card.overdue{border-color:#f0a0a0;background:#fff5f5}
+.contact-avatar{width:42px;height:42px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:15px;font-weight:700;color:var(--ink2)}
+.contact-freq{font-size:12px;color:var(--ink3);margin-top:2px}
+.contact-due{font-size:11px;font-weight:600;color:#d04040;margin-top:2px}
+.contact-actions{display:flex;gap:6px;flex-shrink:0}
+.contact-btn{padding:7px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border:none;border-radius:8px;cursor:pointer;touch-action:manipulation;background:var(--purple);color:#fff}
+.contact-del-btn{background:none;border:1.5px solid var(--border2);color:var(--ink3);padding:7px 10px;font-size:12px;border-radius:8px;cursor:pointer;touch-action:manipulation;font-family:'Plus Jakarta Sans',sans-serif}
+.rel-prompts{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.rel-prompt{background:var(--purple-bg);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--purple-dark);font-weight:500;line-height:1.5;font-style:italic}
+.kind-types{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.kind-type-btn{padding:11px 10px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;border:1.5px solid var(--border2);border-radius:10px;background:var(--bg);cursor:pointer;touch-action:manipulation;color:var(--ink2);text-align:center;transition:all .15s;line-height:1.3}
+.kind-type-btn.kind-sel{background:var(--purple-bg);border-color:var(--purple);color:var(--purple)}
+.kind-preview{background:var(--purple-bg);border-radius:12px;padding:16px;font-size:14px;color:var(--ink2);line-height:1.7;font-style:italic;margin-bottom:12px;min-height:60px}
+.send-options{display:flex;gap:8px}
+.send-sms-btn{flex:1;padding:13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:12px;cursor:pointer;touch-action:manipulation}
+.send-email-btn{flex:1;padding:13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--ink2);color:#fff;border:none;border-radius:12px;cursor:pointer;touch-action:manipulation}
+.thinking-card{background:linear-gradient(135deg,var(--purple-bg),#f0f7f0);border-radius:14px;border:1.5px solid var(--purple-mid);padding:18px;margin-bottom:10px}
+
+/* ── Emotional tracker ── */
+.mood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;touch-action:manipulation;transition:all .15s}
+.mood-btn.mood-sel{border-color:var(--purple);background:var(--purple-bg)}
+.mood-emoji{font-size:22px;line-height:1}
+.mood-label{font-size:10px;font-weight:600;color:var(--ink3);letter-spacing:.03em}
+.mood-btn.mood-sel .mood-label{color:var(--purple)}
+.energy-dots{display:flex;gap:6px;flex-wrap:wrap}
+.e-dot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--ink3);transition:all .15s;touch-action:manipulation}
+.e-dot.e-dot-sel{background:var(--purple);border-color:var(--purple);color:#fff}
+
+/* ── Workout plan cards ── */
+.plans-list{display:flex;flex-direction:column;gap:8px}
+.plan-card{background:var(--bg);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;cursor:pointer;transition:border-color .15s}
+.plan-card.plan-open{border-color:var(--purple)}
+.plan-card-head{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.plan-emoji{font-size:24px;flex-shrink:0}
+.plan-title{font-size:15px;font-weight:700;color:var(--ink2)}
+.plan-tag{font-size:12px;color:var(--ink3);margin-top:2px}
+.plan-chevron{font-size:11px;color:var(--ink4);flex-shrink:0}
+.plan-body{padding:0 16px 12px;font-size:13px;color:var(--ink2);line-height:1.8;white-space:pre-wrap;font-family:monospace;background:var(--white);border-top:1px solid var(--border)}
+.plan-use-btn{display:block;width:calc(100% - 32px);margin:0 16px 14px;padding:12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:10px;cursor:pointer;touch-action:manipulation}
+
+/* ── Exercise tab ── */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+.day-pill{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;touch-action:manipulation;transition:all .15s}
+.day-pill.weights{background:var(--purple-bg);border-color:var(--purple-mid)}
+.day-pill.cardio{background:#e8f4ff;border-color:#90c4f0}
+.day-pill.rest{background:#f0f7f0;border-color:#a8d4a8}
+.day-pill.active-day{box-shadow:0 0 0 2px var(--purple)}
+.day-name{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.day-type{font-size:9px;font-weight:600;color:var(--ink3)}
+.day-pill.weights .day-type{color:var(--purple)}
+.day-pill.cardio .day-type{color:#2196f3}
+.day-pill.rest .day-type{color:#4caf50}
+.type-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.type-opt{padding:7px 14px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;border:1.5px solid var(--border2);border-radius:99px;background:var(--bg);cursor:pointer;touch-action:manipulation;color:var(--ink3);transition:all .15s}
+.type-opt.sel-weights{background:var(--purple-bg);border-color:var(--purple);color:var(--purple)}
+.type-opt.sel-cardio{background:#e8f4ff;border-color:#2196f3;color:#2196f3}
+.type-opt.sel-rest{background:#f0f7f0;border-color:#4caf50;color:#4caf50}
+
+/* ── Nourishment tab ── */
+.water-tracker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.glass{width:38px;height:48px;border-radius:6px 6px 10px 10px;border:2px solid var(--border2);background:var(--bg);cursor:pointer;touch-action:manipulation;transition:all .2s;display:flex;align-items:flex-end;overflow:hidden;position:relative}
+.glass.filled{border-color:#2196f3}
+.glass-fill{width:100%;background:linear-gradient(180deg,#64b5f6,#1976d2);border-radius:0 0 8px 8px;transition:height .3s;height:0}
+.glass.filled .glass-fill{height:100%}
+.water-count{font-size:13px;font-weight:700;color:#2196f3;margin-top:8px;margin-bottom:4px}
+.vitamin-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.vitamin-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;cursor:pointer;touch-action:manipulation;transition:background .12s}
+.vitamin-row.checked{background:#f5f0ff}
+.vitamin-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;transition:all .2s}
+.vitamin-row.checked .vitamin-check{background:var(--purple);border-color:var(--purple)}
+.vitamin-name{font-size:14px;font-weight:500;color:var(--ink2)}
+.vitamin-row.checked .vitamin-name{color:var(--purple)}
+.meal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.meal-slot{background:var(--bg);border-radius:10px;padding:10px 12px;border:1.5px solid var(--border)}
+.meal-slot-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.meal-inp{width:100%;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:none;background:transparent;color:var(--ink2);outline:none;padding:0}
+.meal-inp::placeholder{color:var(--ink4)}
+.meal-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.meal-chip{padding:6px 12px;font-size:12px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;background:var(--purple-bg);border:none;border-radius:99px;color:var(--purple-dark);cursor:pointer;touch-action:manipulation}
+
+/* ── Financial tab ── */
+.savings-goal-card{background:#f5f5f5;border-radius:14px;padding:18px;margin-bottom:10px;border:1px solid #e0e0e0}
+.savings-progress-bar{height:8px;background:var(--purple-light);border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.savings-progress-fill{height:100%;background:var(--purple);border-radius:99px;transition:width .4s}
+.savings-amounts{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);font-weight:500}
+.desire-card{background:var(--purple-bg);border:1.5px solid var(--purple-mid);border-radius:14px;padding:16px;margin-bottom:10px}
+.desire-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.category-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.cat-card{background:var(--bg);border-radius:12px;padding:12px;border:1.5px solid var(--border)}
+.cat-name{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.cat-amount{font-size:20px;font-weight:800;color:var(--ink2)}
+.cat-add{display:flex;gap:6px;margin-top:8px}
+.cat-add-inp{flex:1;padding:7px 10px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1.5px solid var(--border2);border-radius:8px;background:var(--white);color:var(--ink);outline:none;min-width:0}
+.cat-add-btn{padding:7px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:8px;cursor:pointer;touch-action:manipulation}
+.spend-total{text-align:right;font-size:13px;font-weight:700;color:var(--ink3);margin-bottom:12px}
+.spend-total span{color:var(--purple);font-size:16px}
+
+/* ── Log entries (past) ── */
+.past-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:14px 16px 8px}
+.log-entry{background:var(--white);border-top:1px solid var(--border);padding:14px 16px}
+.log-date{font-size:11px;color:var(--ink4);font-weight:600;margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+.log-text{font-size:14px;color:var(--ink2);line-height:1.65}
+.log-foot{display:flex;justify-content:flex-end;margin-top:10px}
+.del-btn{background:none;border:none;font-size:12px;color:var(--ink4);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;touch-action:manipulation}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:60px 24px}
+.empty-icon{font-size:40px;margin-bottom:14px}
+.empty-title{font-size:17px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.empty-sub{font-size:14px;color:var(--ink3);line-height:1.6}
+
+/* ── Journal prompts ── */
+.prompts-scroll{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.prompt-chip{background:var(--purple-bg);border:none;border-radius:12px;padding:12px 14px;font-size:13px;color:var(--purple-dark);cursor:pointer;touch-action:manipulation;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;line-height:1.4;width:100%}
+.prompt-chip:active{background:var(--purple-light)}
+
+/* ── Inspire ── */
+.quote-wrap{padding:24px 16px}
+.quote-card{background:var(--white);border-radius:20px;padding:32px 24px;text-align:center;border:1px solid var(--border);margin-bottom:20px;box-shadow:0 2px 20px rgba(124,77,190,.08)}
+.quote-mark{font-size:40px;color:var(--purple-mid);line-height:1;margin-bottom:12px}
+.quote-text{font-size:19px;font-weight:500;color:var(--ink2);line-height:1.6;margin-bottom:18px;letter-spacing:-.01em}
+.quote-author{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.new-quote-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto;padding:13px 28px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:99px;cursor:pointer;touch-action:manipulation}
+/* ── Modal ── */
+.modal-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:16px}
+.modal-footer{display:flex;gap:10px;margin-top:16px}
+.modal-cancel{flex:1;padding:13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;background:none;border:1.5px solid var(--border2);border-radius:10px;cursor:pointer;color:var(--ink2)}
+.modal-save{flex:2;padding:13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;background:var(--purple);color:#fff;border:none;border-radius:10px;cursor:pointer}
+.mi-ta{width:100%;padding:11px 13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.6;border:1.5px solid var(--border2);border-radius:10px;background:#fff;color:var(--ink);outline:none;resize:vertical;min-height:80px}
+.fg{margin-bottom:12px}
+.lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:99px;margin:0 auto 18px}
+/* ── Relationships tab ── */
+.contact-item{display:flex;align-items:center;gap:12px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.contact-avatar{width:40px;height:40px;border-radius:50%;background:var(--purple-mid);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:14px;font-weight:700;color:var(--ink2)}
+.contact-freq{font-size:11px;color:var(--ink3);margin-top:2px}
+.contact-overdue{font-size:10px;font-weight:700;color:#e53935;background:#ffeaea;padding:2px 8px;border-radius:99px;margin-top:4px;display:inline-block}
+.contact-ok{font-size:10px;font-weight:700;color:#4caf50;background:#f0f7f0;padding:2px 8px;border-radius:99px;margin-top:4px;display:inline-block}
+.contact-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.contact-send-btn{padding:6px 12px;font-size:11px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:var(--purple);color:#fff;border:none;border-radius:8px;cursor:pointer;touch-action:manipulation;white-space:nowrap}
+.contact-checkin-btn{padding:6px 12px;font-size:11px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink3);border:1px solid var(--border2);border-radius:8px;cursor:pointer;touch-action:manipulation}
+.rel-prompt-chip{width:100%;padding:12px 14px;font-size:13px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;background:var(--purple-bg);border:none;border-radius:12px;color:var(--purple-dark);cursor:pointer;touch-action:manipulation;text-align:left;line-height:1.4;margin-bottom:8px}
+.comm-tip-card{background:linear-gradient(135deg,var(--purple-bg),#f0f0ff);border-radius:14px;padding:18px;border:1px solid var(--purple-light)}
+.comm-tip-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.comm-tip-text{font-size:15px;font-weight:500;color:var(--ink2);line-height:1.6}
+.kind-msg-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.kind-msg-type{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.kind-msg-text{font-size:14px;color:var(--ink2);line-height:1.6;margin-bottom:10px}
+.kind-msg-actions{display:flex;gap:6px;flex-wrap:wrap}
+.kind-send-btn{padding:7px 14px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;border:none;border-radius:8px;cursor:pointer;touch-action:manipulation}
+.send-sms{background:#4caf50;color:#fff}
+.send-email{background:#2196f3;color:#fff}
+.send-copy{background:var(--bg);color:var(--ink3);border:1px solid var(--border2)}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="header-logo">daily<span>.</span></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="header-date" id="headerDate"></div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('daily',this)">Daily</button>
+    <button class="tab-btn" onclick="switchTab('exercise',this)">Exercise</button>
+    <button class="tab-btn" onclick="switchTab('nourish',this)">Nourishment</button>
+    <button class="tab-btn" onclick="switchTab('emotional',this)">Emotions</button>
+    <button class="tab-btn" onclick="switchTab('relationships',this)">Relationships</button>
+    <button class="tab-btn" onclick="switchTab('financial',this)">Money</button>
+    <button class="tab-btn" onclick="switchTab('journal',this)">Journal</button>
+    <button class="tab-btn" onclick="switchTab('evening',this)">Evening</button>
+    <button class="tab-btn" onclick="switchTab('inspire',this)">Inspire</button>
+  </div>
+
+  <div class="feed">
+    <div class="feed-inner" id="viewBody"></div>
+  </div>
+
+</div>
+
+<script>
+
+const DB_KEY='daily_v1';
+let curTab='daily';
+let DEFAULT_WINS=['Made my bed','Got dressed intentionally','Read / meditate','Movement / exercise','Ate something nourishing'];
+let wins=[...DEFAULT_WINS];
+let checkedWins=new Set();
+let actions=['','',''];
+let DB={};
+let currentQuote=null;
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmtFull(iso){if(!iso)return'';const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+function fmtShort(iso){if(!iso)return'';const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase()}
+
+function loadDB(){try{DB=JSON.parse(localStorage.getItem(DB_KEY)||'{}');wins=DB.wins||[...DEFAULT_WINS];}catch(e){DB={};wins=[...DEFAULT_WINS];}}
+function saveDB(key,value){DB[key]=value;localStorage.setItem(DB_KEY,JSON.stringify(DB));}
+function save(){saveDB('wins',wins);}
+
+// Init
+loadDB();
+document.getElementById('headerDate').textContent=fmtFull(today());
+// renderTab called after all functions loaded (see bottom of script)
+
+// LEGACY (unused) — works everywhere, no server needed) ──
+
+
+
+function switchTab(tab,btn){
+  curTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.scrollIntoView({inline:'center',behavior:'smooth'});
+  renderTab();
+}
+
+function renderTab(){
+  if(curTab==='daily') renderDaily();
+  else if(curTab==='emotional') renderEmotional();
+  else if(curTab==='relationships') renderRelationships();
+  else if(curTab==='exercise') renderExercise();
+  else if(curTab==='nourish') renderNourish();
+  else if(curTab==='financial') renderFinancial();
+  else if(curTab==='journal') renderJournal();
+  else if(curTab==='evening') renderEvening();
+  else renderInspire();
+}
+
+// ═══════════════ DAILY ═══════════════
+function renderDaily(){
+  document.getElementById('viewBody').innerHTML=`
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">☀️</div>
+        <div>
+          <div class="post-title">Morning wins</div>
+          <div class="post-sub">How did you win this morning?</div>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="wins-list" id="winsList"></div>
+        <div class="add-win-row">
+          <input class="add-win-inp" id="customWinInp" placeholder="Add your own win…" onkeydown="if(event.key==='Enter')addCustomWin()">
+          <button class="add-win-btn" onclick="addCustomWin()">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🎯</div>
+        <div>
+          <div class="post-title">The priority</div>
+          <div class="post-sub">The one thing I've been avoiding</div>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="priority-block">
+          <div class="block-prompt">The one thing I've been avoiding that will move me forward the most…</div>
+          <textarea class="ta" id="inp_priority" placeholder="Be honest with yourself…" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">⚡</div>
+        <div>
+          <div class="post-title">Top 3 actions</div>
+          <div class="post-sub">What moves you closer to your goals today?</div>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="action-rows" id="actionRows"></div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">✨</div>
+        <div>
+          <div class="post-title">Mindset</div>
+          <div class="post-sub">How you show up & how you give</div>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="mindset-block">
+          <div class="mindset-prompt">How do I want to show up today?</div>
+          <div class="mindset-prefix">I want to be someone who…</div>
+          <textarea class="ta" id="inp_showup" placeholder="…shows up fully, leads with love, moves with intention" rows="2"></textarea>
+        </div>
+        <div style="height:10px"></div>
+        <div class="mindset-block">
+          <div class="mindset-prompt">How can I add more value to others?</div>
+          <div class="mindset-prefix">Today I will…</div>
+          <textarea class="ta" id="inp_value" placeholder="…listen deeply, encourage someone, share what I know" rows="2"></textarea>
+        </div>
+        <div style="height:4px"></div>
+        <button class="primary-btn" onclick="saveDaily()">Save today's entry</button>
+        <div class="save-confirm" id="saveConfirm">You're doing great ✦</div>
+      </div>
+    </div>`;
+
+  renderWins();
+  renderActions();
+}
+
+function renderWins(){
+  const el=document.getElementById('winsList');if(!el)return;
+  el.innerHTML=wins.map((w,i)=>`
+    <div class="win-row${checkedWins.has(i)?' checked':''}" onclick="toggleWin(${i})">
+      <div class="win-circle">${checkedWins.has(i)?'✓':''}</div>
+      <div class="win-text">${esc(w)}</div>
+    </div>`).join('');
+}
+
+function toggleWin(i){
+  if(checkedWins.has(i))checkedWins.delete(i);else checkedWins.add(i);
+  renderWins();
+}
+
+function addCustomWin(){
+  const inp=document.getElementById('customWinInp');
+  const val=(inp.value||'').trim();if(!val)return;
+  wins.push(val);saveDB('wins',wins);inp.value='';renderWins();
+}
+
+function renderActions(){
+  const el=document.getElementById('actionRows');if(!el)return;
+  el.innerHTML=actions.map((a,i)=>`
+    <div class="action-row">
+      <div class="action-num">${i+1}</div>
+      <input class="action-inp" type="text" value="${esc(a)}" placeholder="Action ${i+1}…" oninput="actions[${i}]=this.value">
+    </div>`).join('');
+}
+
+function saveDaily(){
+  const priority=(document.getElementById('inp_priority').value||'').trim();
+  const showup=(document.getElementById('inp_showup').value||'').trim();
+  const value=(document.getElementById('inp_value').value||'').trim();
+  const actionList=actions.filter(a=>a.trim());
+  const winsChecked=Array.from(checkedWins).map(i=>wins[i]);
+  if(!priority&&!showup&&!value&&!actionList.length&&!winsChecked.length)return;
+  if(!DB.dailyLog)DB.dailyLog=[];
+  DB.dailyLog.unshift({id:Date.now().toString(),date:today(),wins:winsChecked,priority,actions:actionList,showup,value});
+  saveDB('dailyLog',DB.dailyLog);
+  const conf=document.getElementById('saveConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';},2600);
+  checkedWins=new Set();actions=['','',''];
+  ['inp_priority','inp_showup','inp_value'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  renderWins();renderActions();
+}
+
+// ═══════════════ EXERCISE ═══════════════
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const WORKOUT_TYPES=['weights','cardio','rest','off'];
+
+const WORKOUT_PLANS=[
+  {
+    id:'full_body_weights',
+    emoji:'🔥',
+    title:'Full Body Weights',
+    tag:'30–40 min · 3–4x/week',
+    type:'weights',
+    content:`🔥 Full Body Workout (30–40 min, 3–4x/week)
+
+Structure:
+• 5 exercises · 3 rounds · 10–15 reps each · Minimal rest (30–60 sec)
+
+─────────────────────────
+🧠 ROUND 1: Lower Body + Power
+
+1. Goblet Squats (35 lb kettlebell)
+   • Hold KB at chest · Sit low, chest up
+   • 12–15 reps
+   👉 Main strength move. Don't rush it.
+
+2. Romanian Deadlifts (15 lb dumbbells)
+   • Slight bend in knees · Push hips back
+   • Feel stretch in hamstrings · 10–12 reps
+   👉 Builds shape in glutes/hamstrings.
+
+─────────────────────────
+🧠 ROUND 2: Upper Body Strength
+
+3. Shoulder Press (8 or 15 lb dumbbells)
+   • Core tight · Press straight up · 10–12 reps
+   👉 Use 8s if 15 is too heavy. Form > weight.
+
+4. Bent Over Rows (15 lb dumbbells)
+   • Flat back · Pull elbows back · 10–12 reps
+   👉 Improves posture and back strength.
+
+─────────────────────────
+🧠 ROUND 3: Core + Conditioning
+
+5. Kettlebell Swings (20 or 35 lb)
+   • Hinge, don't squat · Snap hips forward
+   • 15–20 reps
+   👉 Fat-burning + power move.
+
+6. Plank (Bodyweight)
+   • Straight line body · 30–45 seconds
+
+─────────────────────────
+🧠 Optional Finisher (5 min)
+• 20 KB swings → 10 squats → repeat nonstop
+
+⚡ The real part:
+• 3x/week done well > 7x/week half-done
+• Push yourself on squats + swings — that's where change happens`
+  },
+  {
+    id:'cardio_hiit',
+    emoji:'⚡',
+    title:'HIIT Cardio',
+    tag:'20–25 min · 3x/week',
+    type:'cardio',
+    content:`⚡ HIIT Cardio (20–25 min)
+
+Structure: 40 sec on · 20 sec rest · 4 rounds
+
+─────────────────────────
+Round 1–4 (repeat):
+1. Jump squats — 40 sec
+2. High knees — 40 sec
+3. Burpees — 40 sec
+4. Mountain climbers — 40 sec
+5. Jump rope / skip — 40 sec
+
+Rest 90 sec between rounds.
+
+─────────────────────────
+Cool down (5 min):
+• Hip flexor stretch
+• Hamstring stretch
+• Deep breathing
+
+👉 Intensity is the point. Go hard on work intervals.`
+  },
+  {
+    id:'upper_body',
+    emoji:'💪',
+    title:'Upper Body Strength',
+    tag:'30 min · 2x/week',
+    type:'weights',
+    content:`💪 Upper Body Strength (30 min)
+
+Structure: 4 exercises · 3 sets · 10–12 reps
+
+─────────────────────────
+1. Push-ups or Chest Press
+   • 3 sets · 10–15 reps
+   • Slow down, explode up
+
+2. Dumbbell Rows (15–20 lb)
+   • 3 sets · 10–12 reps each side
+   • Squeeze shoulder blade at top
+
+3. Lateral Raises (8–10 lb)
+   • 3 sets · 12–15 reps
+   • Slow and controlled
+
+4. Bicep Curls + Tricep Dips
+   • 2 sets each · 12 reps
+   • Superset — no rest between
+
+─────────────────────────
+👉 Focus on the muscle, not the weight.`
+  },
+  {
+    id:'walk_stretch',
+    emoji:'🌿',
+    title:'Walk + Stretch',
+    tag:'30–45 min · Active recovery',
+    type:'cardio',
+    content:`🌿 Walk + Stretch (Active Recovery)
+
+This is not a rest day — it's active recovery.
+
+─────────────────────────
+Walk (20–30 min):
+• Outside if possible
+• No phone — just walk and breathe
+• Brisk pace, not strolling
+
+─────────────────────────
+Stretch (15 min):
+• Hip flexors — 60 sec each
+• Hamstrings — 60 sec each
+• Chest opener — 60 sec
+• Spinal twist — 60 sec each side
+• Child's pose — 90 sec
+
+─────────────────────────
+👉 Recovery is when you actually get stronger.
+    Don't skip this.`
+  },
+];
+
+let expandedPlan=null;
+
+function renderExercise(){
+  const schedule=DB.exerciseSchedule||{};
+  const logs=DB.exercise||[];
+  const todayDay=DAYS[new Date().getDay()===0?6:new Date().getDay()-1];
+  const todaySchedule=schedule[todayDay]||'';
+
+  const dayPills=DAYS.map(d=>{
+    const type=schedule[d]||'';
+    const isToday=d===todayDay;
+    const label=type?type.charAt(0).toUpperCase()+type.slice(1,4):'—';
+    return`<div class="day-pill${type?' '+type:''}${isToday?' active-day':''}" onclick="editDaySchedule('${d}')">
+      <div class="day-name">${d}</div>
+      <div class="day-type">${label}</div>
+    </div>`;
+  }).join('');
+
+  // Workout plan cards
+  const planCards=WORKOUT_PLANS.map(p=>{
+    const isOpen=expandedPlan===p.id;
+    return`<div class="plan-card${isOpen?' plan-open':''}" onclick="togglePlan('${p.id}')">
+      <div class="plan-card-head">
+        <div class="plan-emoji">${p.emoji}</div>
+        <div style="flex:1">
+          <div class="plan-title">${p.title}</div>
+          <div class="plan-tag">${p.tag}</div>
+        </div>
+        <div class="plan-chevron">${isOpen?'▲':'▼'}</div>
+      </div>
+      ${isOpen?`<div class="plan-body">${esc(p.content).replace(/\n/g,'<br>')}</div>
+        <button class="plan-use-btn" onclick="event.stopPropagation();usePlan('${p.id}')">Use this plan today</button>`:''}
+    </div>`;
+  }).join('');
+
+  let html=`
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🗓️</div>
+        <div><div class="post-title">Weekly schedule</div><div class="post-sub">Tap a day to set your workout type</div></div>
+      </div>
+      <div class="post-body">
+        <div class="week-grid">${dayPills}</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">📋</div>
+        <div><div class="post-title">Workout plans</div><div class="post-sub">Tap to expand · tap "Use this plan" to log it</div></div>
+      </div>
+      <div class="post-body">
+        <div class="plans-list">${planCards}</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💪</div>
+        <div><div class="post-title">Today's log</div><div class="post-sub">${todayDay}${todaySchedule?' · '+todaySchedule.charAt(0).toUpperCase()+todaySchedule.slice(1):''}</div></div>
+      </div>
+      <div class="post-body">
+        <textarea class="ta" id="ex_log" placeholder="What did you do today? Log sets, reps, how it felt…" rows="4"></textarea>
+        <div style="height:10px"></div>
+        <button class="primary-btn" onclick="saveExercise()">Save workout</button>
+        <div class="save-confirm" id="exConfirm" style="margin-top:8px">Workout logged ✦</div>
+      </div>
+    </div>`;
+
+  if(logs.length){
+    html+=`<div class="past-label">Past workouts</div>`;
+    logs.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="log-date">${fmtShort(e.date)}${e.type?' · '+e.type:''}</div>
+        ${e.plan?`<div class="log-text" style="color:var(--purple);font-size:12px;font-weight:600;margin-bottom:4px">${e.plan}</div>`:''}
+        <div class="log-text">${esc(e.log||'').replace(/\n/g,'<br>')}</div>
+        <div class="log-foot"><button class="del-btn" onclick="deleteExercise('${e.id}')">Delete</button></div>
+      </div>`;
+    });
+  }
+  document.getElementById('viewBody').innerHTML=html;
+}
+
+function togglePlan(id){
+  expandedPlan=expandedPlan===id?null:id;
+  renderExercise();
+  // Scroll to the opened plan
+  setTimeout(()=>{
+    const el=document.querySelector('.plan-open');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },50);
+}
+
+function usePlan(id){
+  const plan=WORKOUT_PLANS.find(p=>p.id===id);
+  if(!plan)return;
+  const ta=document.getElementById('ex_log');
+  if(ta){ta.value=plan.content;ta.scrollIntoView({behavior:'smooth'});}
+}
+
+function editDaySchedule(day){
+  const schedule=DB.exerciseSchedule||{};
+  const current=schedule[day]||'';
+  const opts=WORKOUT_TYPES.map(t=>`<button class="type-opt${current===t?' sel-'+t:''}" onclick="setDayType('${day}','${t}')">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('');
+  openModal(`<div class="modal-handle"></div>
+    <div class="modal-title">${day} — workout type</div>
+    <div class="type-selector" id="typeSelector">${opts}</div>
+    <div class="fg"><label class="lbl">Notes for this day</label>
+    <textarea class="mi-ta" id="day_notes" placeholder="e.g. Push day — chest, shoulders, triceps">${esc(schedule[day+'_notes']||'')}</textarea></div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveDaySchedule('${day}')">Save</button>
+    </div>`);
+}
+
+function setDayType(day,type){
+  document.querySelectorAll('.type-opt').forEach(b=>{
+    b.className='type-opt'+(b.textContent.toLowerCase()===type?' sel-'+type:'');
+  });
+}
+
+function saveDaySchedule(day){
+  if(!DB.exerciseSchedule)DB.exerciseSchedule={};
+  const selected=document.querySelector('#typeSelector .type-opt[class*="sel-"]');
+  if(selected)DB.exerciseSchedule[day]=selected.textContent.toLowerCase();
+  DB.exerciseSchedule[day+'_notes']=(document.getElementById('day_notes').value||'').trim();
+  saveDB('exerciseSchedule',DB.exerciseSchedule);closeModal();renderExercise();
+}
+
+function saveExercise(){
+  const log=(document.getElementById('ex_log').value||'').trim();
+  if(!log)return;
+  if(!DB.exercise)DB.exercise=[];
+  const todayDay=DAYS[new Date().getDay()===0?6:new Date().getDay()-1];
+  const type=(DB.exerciseSchedule||{})[todayDay]||'';
+  DB.exercise.unshift({id:Date.now().toString(),date:today(),type,log});
+  saveDB('exercise',DB.exercise);
+  const conf=document.getElementById('exConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderExercise();},1200);
+}
+
+function deleteExercise(id){
+  DB.exercise=(DB.exercise||[]).filter(e=>e.id!==id);
+  saveDB('exercise',DB.exercise);renderExercise();
+}
+
+// ═══════════════ NOURISHMENT ═══════════════
+const MEAL_SUGGESTIONS=['Overnight oats','Greek yogurt + berries','Avocado toast','Grilled salmon + greens','Chicken + quinoa','Veggie stir fry','Smoothie bowl','Lentil soup'];
+
+function renderNourish(){
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{breakfast:'',lunch:'',dinner:'',snack:''},vitaminList:[]};
+  const n=DB.nourish;
+  if(!n.vitaminList)n.vitaminList=[];
+  const glasses=n.glasses||0;
+
+  const glassHtml=Array.from({length:8},(_,i)=>`
+    <div class="glass${i<glasses?' filled':''}" onclick="toggleGlass(${i})">
+      <div class="glass-fill"></div>
+    </div>`).join('');
+
+  const vitaminHtml=n.vitaminList.length
+    ? n.vitaminList.map((v,i)=>`
+      <div class="vitamin-row${n.vitamins[v]?' checked':''}">
+        <div style="display:flex;align-items:center;gap:10px;flex:1" onclick="toggleVitamin('${v.replace(/'/g,"\\'")}')">
+          <div class="vitamin-check">${n.vitamins[v]?'✓':''}</div>
+          <div class="vitamin-name">${esc(v)}</div>
+        </div>
+        <button onclick="removeVitamin(${i})" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:14px;padding:4px 8px;touch-action:manipulation">✕</button>
+      </div>`).join('')
+    : `<div style="font-size:13px;color:var(--ink4);font-style:italic;padding:8px 0">No vitamins added yet — add yours below</div>`;
+
+  const suggestHtml=MEAL_SUGGESTIONS.map(m=>`<button class="meal-chip" onclick="useMealSuggestion('${m}')">${m}</button>`).join('');
+
+  document.getElementById('viewBody').innerHTML=`
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💧</div>
+        <div><div class="post-title">Water intake</div><div class="post-sub">Tap each glass as you drink it</div></div>
+      </div>
+      <div class="post-body">
+        <div class="water-tracker">${glassHtml}</div>
+        <div class="water-count">${glasses} of 8 glasses · ${glasses*8} oz</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💊</div>
+        <div><div class="post-title">Vitamins & supplements</div><div class="post-sub">Your personal supplement checklist</div></div>
+      </div>
+      <div class="post-body">
+        <div class="vitamin-list">${vitaminHtml}</div>
+        <div class="add-win-row" style="margin-top:10px">
+          <input class="add-win-inp" id="vitaminInp" placeholder="Add a vitamin or supplement…" onkeydown="if(event.key==='Enter')addVitamin()">
+          <button class="add-win-btn" onclick="addVitamin()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🌿</div>
+        <div><div class="post-title">Meals today</div><div class="post-sub">Log what you ate</div></div>
+      </div>
+      <div class="post-body">
+        <div class="meal-suggestions">${suggestHtml}</div>
+        <div class="meal-grid">
+          <div class="meal-slot"><div class="meal-slot-label">Breakfast</div><input class="meal-inp" id="meal_breakfast" placeholder="What did you have?" value="${esc(n.meals.breakfast||'')}"></div>
+          <div class="meal-slot"><div class="meal-slot-label">Lunch</div><input class="meal-inp" id="meal_lunch" placeholder="What did you have?" value="${esc(n.meals.lunch||'')}"></div>
+          <div class="meal-slot"><div class="meal-slot-label">Dinner</div><input class="meal-inp" id="meal_dinner" placeholder="What did you have?" value="${esc(n.meals.dinner||'')}"></div>
+          <div class="meal-slot"><div class="meal-slot-label">Snack</div><input class="meal-inp" id="meal_snack" placeholder="Any snacks?" value="${esc(n.meals.snack||'')}"></div>
+        </div>
+        <button class="primary-btn" onclick="saveMeals()">Save meals</button>
+        <div class="save-confirm" id="nourishConfirm" style="margin-top:8px">Saved ✦</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">📖</div>
+        <div><div class="post-title">Recipe box</div><div class="post-sub">Save recipes · tap to add to today's meals</div></div>
+      </div>
+      <div class="post-body">
+        ${(n.recipes||[]).length?`<div style="margin-bottom:12px">${(n.recipes||[]).map((r,i)=>`
+          <div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:600;color:var(--ink2);margin-bottom:3px">${esc(r.name)}</div>
+              ${r.notes?`<div style="font-size:12px;color:var(--ink3);line-height:1.5">${esc(r.notes)}</div>`:''}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+              <button onclick="addRecipeToMeal('${esc(r.name)}')" style="padding:5px 10px;font-size:11px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:var(--purple);color:#fff;border:none;border-radius:7px;cursor:pointer;white-space:nowrap">+ Add to meal</button>
+              <button onclick="deleteRecipe(${i})" style="padding:5px 10px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;background:none;border:1px solid var(--border2);border-radius:7px;cursor:pointer;color:var(--ink4)">Delete</button>
+            </div>
+          </div>`).join('')}</div>`:'<div style="font-size:13px;color:var(--ink4);font-style:italic;padding:4px 0 10px">No recipes saved yet — add your favorites below</div>'}
+        <div style="background:var(--purple-bg);border-radius:12px;padding:14px;margin-top:4px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-bottom:10px">Add recipe</div>
+          <input class="ta" style="min-height:auto;padding:11px 13px;margin-bottom:8px" id="recipe_name" placeholder="Recipe name e.g. Lemon salmon bowl">
+          <textarea class="ta" id="recipe_notes" placeholder="Ingredients, steps, or notes…" rows="3"></textarea>
+          <button class="primary-btn" style="margin-top:10px;font-size:13px;padding:11px" onclick="saveRecipe()">Save recipe</button>
+          <div class="save-confirm" id="recipeConfirm" style="margin-top:6px">Recipe saved ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🥗</div>
+        <div><div class="post-title">Food prep</div><div class="post-sub">Plan your prep for the week</div></div>
+      </div>
+      <div class="post-body">
+        <textarea class="ta" id="food_prep" placeholder="What are you prepping this week? e.g. Brown rice, grilled chicken, cut veggies, overnight oats…" rows="4">${esc(n.foodPrep||'')}</textarea>
+        <button class="primary-btn" style="margin-top:10px;font-size:13px;padding:11px" onclick="saveFoodPrep()">Save food prep</button>
+        <div class="save-confirm" id="prepConfirm" style="margin-top:6px">Saved ✦</div>
+      </div>
+    </div>`;
+}
+
+function saveRecipe(){
+  const name=(document.getElementById('recipe_name').value||'').trim();if(!name)return;
+  const notes=(document.getElementById('recipe_notes').value||'').trim();
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[],recipes:[],foodPrep:''};
+  if(!DB.nourish.recipes)DB.nourish.recipes=[];
+  DB.nourish.recipes.unshift({name,notes,id:Date.now().toString()});
+  saveDB('nourish',DB.nourish);
+  const conf=document.getElementById('recipeConfirm');
+  if(conf){conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderNourish();},1200);}
+}
+function deleteRecipe(i){
+  if(!DB.nourish||!DB.nourish.recipes)return;
+  DB.nourish.recipes.splice(i,1);
+  saveDB('nourish',DB.nourish);renderNourish();
+}
+function addRecipeToMeal(name){
+  // Add to the first empty meal slot
+  const slots=['breakfast','lunch','dinner','snack'];
+  for(const s of slots){
+    const el=document.getElementById('meal_'+s);
+    if(el&&!el.value){el.value=name;el.style.background='#f5f0ff';break;}
+  }
+}
+function saveFoodPrep(){
+  const text=(document.getElementById('food_prep').value||'').trim();
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[],recipes:[],foodPrep:''};
+  DB.nourish.foodPrep=text;
+  saveDB('nourish',DB.nourish);
+  const conf=document.getElementById('prepConfirm');
+  if(conf){conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';},1400);}
+}
+
+function removeVitamin(i){
+  if(!DB.nourish||!DB.nourish.vitaminList)return;
+  const name=DB.nourish.vitaminList[i];
+  DB.nourish.vitaminList.splice(i,1);
+  delete DB.nourish.vitamins[name];
+  saveDB('nourish',DB.nourish);renderNourish();
+}
+
+function toggleGlass(i){
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[]};
+  const current=DB.nourish.glasses||0;
+  DB.nourish.glasses=i<current?i:i+1;
+  saveDB('nourish',DB.nourish);renderNourish();
+}
+
+function toggleVitamin(name){
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[]};
+  DB.nourish.vitamins[name]=!DB.nourish.vitamins[name];
+  saveDB('nourish',DB.nourish);renderNourish();
+}
+
+function addVitamin(){
+  const inp=document.getElementById('vitaminInp');
+  const val=(inp.value||'').trim();if(!val)return;
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[]};
+  if(!DB.nourish.vitaminList)DB.nourish.vitaminList=[];
+  if(!DB.nourish.vitaminList.includes(val)){DB.nourish.vitaminList.push(val);saveDB('nourish',DB.nourish);}
+  inp.value='';renderNourish();
+}
+
+function useMealSuggestion(meal){
+  const slots=['breakfast','lunch','dinner','snack'];
+  for(const s of slots){
+    const el=document.getElementById('meal_'+s);
+    if(el&&!el.value){el.value=meal;break;}
+  }
+}
+
+function saveMeals(){
+  if(!DB.nourish)DB.nourish={glasses:0,vitamins:{},meals:{},vitaminList:[]};
+  DB.nourish.meals={
+    breakfast:(document.getElementById('meal_breakfast').value||'').trim(),
+    lunch:(document.getElementById('meal_lunch').value||'').trim(),
+    dinner:(document.getElementById('meal_dinner').value||'').trim(),
+    snack:(document.getElementById('meal_snack').value||'').trim(),
+  };
+  saveDB('nourish',DB.nourish);
+  const conf=document.getElementById('nourishConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';},1400);
+}
+
+// ═══════════════ FINANCIAL ═══════════════
+const SPEND_CATS=['Food','Transport','Shopping','Health','Entertainment','Other'];
+
+function initFinancial(){
+  if(!DB.financial)DB.financial={savings:{goal:0,saved:0},desire:{item:'',cost:0,saved:0},spending:{}};
+  if(!DB.financial.savings)DB.financial.savings={goal:0,saved:0};
+  if(!DB.financial.desire)DB.financial.desire={item:'',cost:0,saved:0};
+  if(!DB.financial.spending)DB.financial.spending={};
+}
+
+function renderFinancial(){
+  initFinancial();
+  const f=DB.financial;
+  const savingsPct=f.savings.goal>0?Math.min(100,Math.round((f.savings.saved/f.savings.goal)*100)):0;
+  const desirePct=f.desire.cost>0?Math.min(100,Math.round((f.desire.saved/f.desire.cost)*100)):0;
+  const totalSpend=SPEND_CATS.reduce((sum,c)=>sum+(parseFloat(f.spending[c])||0),0);
+
+  const catHtml=SPEND_CATS.map(c=>`
+    <div class="cat-card">
+      <div class="cat-name">${c}</div>
+      <div class="cat-amount">$${(parseFloat(f.spending[c])||0).toFixed(0)}</div>
+      <div class="cat-add">
+        <input class="cat-add-inp" type="number" min="0" step="0.01" placeholder="+$" id="spend_${c}">
+        <button class="cat-add-btn" onclick="addSpend('${c}')">Add</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('viewBody').innerHTML=`
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🏦</div>
+        <div><div class="post-title">Savings plan</div><div class="post-sub">Track progress toward your savings goal</div></div>
+      </div>
+      <div class="post-body">
+        <div class="savings-goal-card">
+          <div class="block-label">Savings goal</div>
+          <div class="savings-amounts" style="margin-bottom:6px">
+            <span>Saved: <strong>$${(parseFloat(f.savings.saved)||0).toLocaleString()}</strong></span>
+            <span>Goal: <strong>$${(parseFloat(f.savings.goal)||0).toLocaleString()}</strong></span>
+          </div>
+          <div class="savings-progress-bar"><div class="savings-progress-fill" style="width:${savingsPct}%"></div></div>
+          <div style="text-align:right;font-size:12px;color:var(--purple);font-weight:700;margin-bottom:14px">${savingsPct}%</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:4px">Set goal</div>
+              <input class="cat-add-inp" style="width:100%" type="number" min="0" placeholder="$5,000" id="savings_goal" value="${parseFloat(f.savings.goal)||''}">
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:4px">Add amount</div>
+              <input class="cat-add-inp" style="width:100%" type="number" min="0" placeholder="$200" id="savings_add">
+            </div>
+          </div>
+          <button class="primary-btn" onclick="updateSavings()">Update savings</button>
+          <div class="save-confirm" id="savingsConfirm" style="margin-top:8px">Saved ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">✨</div>
+        <div><div class="post-title">Desire goal</div><div class="post-sub">Something beautiful you're working toward</div></div>
+      </div>
+      <div class="post-body">
+        <div class="desire-card">
+          <div class="desire-label">I am saving for…</div>
+          <input class="cat-add-inp" style="width:100%;margin-bottom:12px" placeholder="e.g. dream vacation, new car, handbag…" id="desire_item" value="${esc(f.desire.item||'')}">
+          <div class="savings-amounts" style="margin-bottom:6px">
+            <span>Saved: <strong>$${(parseFloat(f.desire.saved)||0).toLocaleString()}</strong></span>
+            <span>Cost: <strong>$${(parseFloat(f.desire.cost)||0).toLocaleString()}</strong></span>
+          </div>
+          <div class="savings-progress-bar"><div class="savings-progress-fill" style="width:${desirePct}%"></div></div>
+          <div style="text-align:right;font-size:12px;color:var(--purple);font-weight:700;margin-bottom:14px">${desirePct}%</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:4px">Total cost</div>
+              <input class="cat-add-inp" style="width:100%" type="number" min="0" placeholder="$2,500" id="desire_cost" value="${parseFloat(f.desire.cost)||''}">
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:4px">Add amount</div>
+              <input class="cat-add-inp" style="width:100%" type="number" min="0" placeholder="$100" id="desire_add">
+            </div>
+          </div>
+          <button class="primary-btn" onclick="updateDesire()">Update desire goal</button>
+          <div class="save-confirm" id="desireConfirm" style="margin-top:8px">Saved ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💳</div>
+        <div><div class="post-title">Spending tracker</div><div class="post-sub">This month · tap Add to log an expense</div></div>
+      </div>
+      <div class="post-body">
+        <div class="spend-total">Monthly total: <span>$${totalSpend.toFixed(0)}</span></div>
+        <div class="category-grid">${catHtml}</div>
+        <button class="primary-btn" style="background:var(--ink3);margin-top:8px;font-size:13px;padding:11px" onclick="if(confirm('Reset all spending to $0?'))resetSpending()">Reset month</button>
+      </div>
+    </div>`;
+}
+
+function updateSavings(){
+  initFinancial();
+  const goalEl=document.getElementById('savings_goal');
+  const addEl=document.getElementById('savings_add');
+  const goal=parseFloat(goalEl.value)||DB.financial.savings.goal||0;
+  const add=parseFloat(addEl.value)||0;
+  DB.financial.savings.goal=goal;
+  DB.financial.savings.saved=(parseFloat(DB.financial.savings.saved)||0)+add;
+  saveDB('financial',DB.financial);
+  const conf=document.getElementById('savingsConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderFinancial();},1200);
+}
+
+function updateDesire(){
+  initFinancial();
+  const item=(document.getElementById('desire_item').value||'').trim();
+  const cost=parseFloat(document.getElementById('desire_cost').value)||DB.financial.desire.cost||0;
+  const add=parseFloat(document.getElementById('desire_add').value)||0;
+  DB.financial.desire.item=item;
+  DB.financial.desire.cost=cost;
+  DB.financial.desire.saved=(parseFloat(DB.financial.desire.saved)||0)+add;
+  saveDB('financial',DB.financial);
+  const conf=document.getElementById('desireConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderFinancial();},1200);
+}
+
+function addSpend(cat){
+  initFinancial();
+  const inp=document.getElementById('spend_'+cat);
+  const val=parseFloat(inp.value)||0;
+  if(!val)return;
+  DB.financial.spending[cat]=(parseFloat(DB.financial.spending[cat])||0)+val;
+  saveDB('financial',DB.financial);inp.value='';renderFinancial();
+}
+
+function resetSpending(){
+  initFinancial();
+  DB.financial.spending={};
+  saveDB('financial',DB.financial);renderFinancial();
+}
+
+
+// ═══════════════ EMOTIONAL TRACKER ═══════════════
+const MOODS=[
+  {emoji:'😄',label:'Great'},
+  {emoji:'🙂',label:'Good'},
+  {emoji:'😐',label:'Okay'},
+  {emoji:'😔',label:'Low'},
+  {emoji:'😤',label:'Frustrated'},
+  {emoji:'😰',label:'Anxious'},
+  {emoji:'😴',label:'Drained'},
+  {emoji:'🤩',label:'Excited'},
+];
+
+let selectedMood=null;
+let emotionalEnergy=0;
+
+function renderEmotional(){
+  selectedMood=null;emotionalEnergy=0;
+  const entries=DB.emotional||[];
+
+  const moodHtml=MOODS.map(m=>`
+    <div class="mood-btn" id="mood_${m.label}" onclick="selectMood('${m.label}','${m.emoji}')">
+      <div class="mood-emoji">${m.emoji}</div>
+      <div class="mood-label">${m.label}</div>
+    </div>`).join('');
+
+  let html=`
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💜</div>
+        <div><div class="post-title">Emotional check-in</div><div class="post-sub">How are you really doing today?</div></div>
+      </div>
+      <div class="post-body">
+
+        <div class="block-label" style="margin-bottom:8px">Mood</div>
+        <div class="mood-grid">${moodHtml}</div>
+
+        <div style="height:16px"></div>
+        <div class="block-label" style="margin-bottom:8px">Energy level (1–10)</div>
+        <div class="energy-dots" id="energyDots">${energyDotsHtml(0)}</div>
+
+        <div style="height:16px"></div>
+        <div class="mindset-block">
+          <div class="mindset-prompt">What's bothering you?</div>
+          <div class="mindset-prefix">The problem or challenge on my mind…</div>
+          <textarea class="ta" id="em_problem" placeholder="Be honest — what's weighing on you?" rows="2"></textarea>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="mindset-block">
+          <div class="mindset-prompt">What's actually true?</div>
+          <div class="mindset-prefix">Separate the story from the facts…</div>
+          <textarea class="ta" id="em_lesson" placeholder="When I strip away the fear, what's really true here?" rows="2"></textarea>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="mindset-block" style="background:var(--purple-bg)">
+          <div class="mindset-prompt" style="color:var(--purple)">How can I reframe it or take action?</div>
+          <div class="mindset-prefix">One thing I can think, say, or do differently…</div>
+          <textarea class="ta" id="em_excited" placeholder="I can choose to see this as… or I can take the step of…" rows="2"></textarea>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="mindset-block" style="background:#f0f7f0;border-left:3px solid #6b8f6b">
+          <div class="mindset-prompt" style="color:#4a6b4a">Tune in — what do you need today?</div>
+          <div class="mindset-prefix">My soul is asking for…</div>
+          <textarea class="ta" id="em_need" placeholder="Rest? Connection? Movement? Silence? Fun?" rows="2"></textarea>
+        </div>
+
+        <div style="height:14px"></div>
+        <button class="primary-btn" onclick="saveEmotional()">Save check-in</button>
+        <div class="save-confirm" id="emConfirm" style="margin-top:8px">You matter ✦</div>
+      </div>
+    </div>`;
+
+  if(entries.length){
+    html+=`<div class="past-label">Past check-ins</div>`;
+    entries.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="log-date">${fmtShort(e.date)}${e.mood?' · '+e.moodEmoji+' '+e.mood:''} ${e.energy?' · ⚡'+e.energy+'/10':''}</div>
+        ${e.problem?`<div style="margin-bottom:6px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink4);margin-bottom:2px">Challenge</div><div class="log-text">${esc(e.problem)}</div></div>`:''}
+        ${e.lesson?`<div style="margin-bottom:6px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink4);margin-bottom:2px">Lesson</div><div class="log-text">${esc(e.lesson)}</div></div>`:''}
+        ${e.excited?`<div style="margin-bottom:6px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--purple);margin-bottom:2px">Excited about</div><div class="log-text">${esc(e.excited)}</div></div>`:''}
+        ${e.need?`<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6b8f6b;margin-bottom:2px">I need</div><div class="log-text">${esc(e.need)}</div></div>`:''}
+        <div class="log-foot"><button class="del-btn" onclick="deleteEmotional('${e.id}')">Delete</button></div>
+      </div>`;
+    });
+  }
+  document.getElementById('viewBody').innerHTML=html;
+}
+
+function energyDotsHtml(selected){
+  return Array.from({length:10},(_,i)=>i+1).map(n=>
+    `<div class="e-dot${selected===n?' e-dot-sel':''}" onclick="setEmotionalEnergy(${n})">${n}</div>`
+  ).join('');
+}
+
+function setEmotionalEnergy(val){
+  emotionalEnergy=val;
+  const el=document.getElementById('energyDots');
+  if(el)el.innerHTML=energyDotsHtml(val);
+}
+
+function selectMood(label,emoji){
+  selectedMood={label,emoji};
+  document.querySelectorAll('.mood-btn').forEach(b=>{
+    b.classList.toggle('mood-sel',b.id==='mood_'+label);
+  });
+}
+
+function saveEmotional(){
+  const problem=(document.getElementById('em_problem').value||'').trim();
+  const lesson=(document.getElementById('em_lesson').value||'').trim();
+  const excited=(document.getElementById('em_excited').value||'').trim();
+  const need=(document.getElementById('em_need').value||'').trim();
+  if(!problem&&!lesson&&!excited&&!need&&!selectedMood&&!emotionalEnergy)return;
+  if(!DB.emotional)DB.emotional=[];
+  DB.emotional.unshift({
+    id:Date.now().toString(),date:today(),
+    mood:selectedMood?selectedMood.label:'',
+    moodEmoji:selectedMood?selectedMood.emoji:'',
+    energy:emotionalEnergy||'',
+    problem,lesson,excited,need
+  });
+  saveDB('emotional',DB.emotional);
+  const conf=document.getElementById('emConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderEmotional();},1400);
+}
+
+function deleteEmotional(id){
+  DB.emotional=(DB.emotional||[]).filter(e=>e.id!==id);
+  saveDB('emotional',DB.emotional);renderEmotional();
+}
+
+// ═══════════════ RELATIONSHIPS ═══════════════
+const REL_PROMPTS=[
+  'Who in my life needs me right now?',
+  'How can I show up better for the people I love?',
+  'Who have I been taking for granted lately?',
+  'Who has shown up for me that I haven\'t thanked?',
+  'What relationship do I want to invest more in this week?',
+  'How am I being as a friend, partner, family member?',
+  'Who have I been meaning to reach out to but haven\'t?',
+  'What would it look like to truly listen to someone today?',
+];
+
+const COMM_TIPS=[
+  `Become genuinely interested in other people. It is the one habit that transforms every relationship. (Carnegie)`,
+  `The deepest craving in human nature is the desire to feel important. Make someone feel that today.`,
+  `Talk in terms of other people's interests — not your own. Ask: what matters most to them right now?`,
+  `You can make more friends in two months by being interested in others than in two years trying to get others interested in you. (Carnegie)`,
+  `Before giving feedback, always find something genuine to appreciate first. A warm opening changes everything.`,
+  `People don't change when they feel criticized — they change when they feel seen. Lead with empathy.`,
+  `The quietest leaders ask the most powerful questions. Try "What do you think?" and then actually listen. (Rock)`,
+  `Silence is a superpower. Most people rush to fill it. Let the other person finish fully before responding.`,
+  `Acknowledge feelings before offering solutions. "That sounds really hard" lands better than advice.`,
+  `Use someone's name. It is the sweetest sound in any language to that person. (Carnegie)`,
+  `Never say someone is wrong directly. Ask questions that lead people to discover the answer themselves.`,
+  `Let the other person feel the idea is theirs — they will champion it far more than yours. (Carnegie)`,
+  `The brain changes when people feel safe. Create psychological safety before having hard conversations. (Rock)`,
+  `Don't criticize, condemn, or complain. It never works and always costs you. (Carnegie)`,
+  `The most powerful two words in a relationship: "Tell me more."`,
+  `Arouse in the other person an eager want — not your want, theirs. (Carnegie)`,
+  `If you must correct someone, begin with genuine praise. The sting goes out of the correction.`,
+  `Drama happens when people feel unheard. The antidote is always: listen longer than feels comfortable.`,
+  `Ask "What would help most right now?" instead of assuming what someone needs.`,
+  `Send a voice note instead of a text. It's 10x more personal and people actually feel it.`,
+];
+
+const KIND_MESSAGES=[
+  // Funny & cute
+  {type:`Made me think of you 😂`,emoji:`😂`,text:`Ok I saw something and immediately thought of you. Which honestly says a lot about our friendship and I'm not even sorry 😂 Hope this makes your day at least 12% better.`},
+  {type:`Miss you 🫶`,emoji:`🫶`,text:`Just wanted to say I miss you. Not in a dramatic, made-for-TV way. Just in a "can we please hang out and not cancel this time" kind of way. Let's actually do it.`},
+  {type:`Random appreciation 🎉`,emoji:`🎉`,text:`Hey I just randomly thought about how glad I am that you exist. Anyway. That's it. That's the whole message. You're great. Bye.`},
+  {type:`Checking in with zero reason 🌀`,emoji:`🌀`,text:`No reason for this text. No emergency. Just thought of you and figured I'd say hey. So. Hey. Hope your day is going well. Ok bye 👋`},
+  {type:`You're hilarious 😄`,emoji:`😄`,text:`I was just thinking about that time you made me laugh so hard I couldn't breathe. You are genuinely one of the funniest people I know. Never change. Or do. But don't.`},
+  {type:`Official appreciation notice 📋`,emoji:`📋`,text:`This is your official notification that you are appreciated. Please acknowledge receipt of this message by having a great day. Thank you for your attention. HR (me).`},
+  // Warm & connecting
+  {type:`Thinking of you 💜`,emoji:`💜`,text:`Hey — I was literally just thinking about you and figured, why not say it? Hope your day is going well. You matter more than you know.`},
+  {type:`Just checking in ☀️`,emoji:`☀️`,text:`Hey, no reason, just thinking of you and wanted to check in. How are you really doing? I'm here if you need to talk, vent, or just need someone to listen.`},
+  {type:`Thank you for being you 🙏`,emoji:`🙏`,text:`I've been meaning to say this for a while — thank you. For showing up. For being real. For all the little things you do that nobody sees. I see them.`},
+  {type:`Miss your energy ✨`,emoji:`✨`,text:`I was just thinking about how much I love being around you. Your energy is genuinely one of a kind. The world is better with you in it. That's not even an exaggeration.`},
+  {type:`Rooting for you 🌱`,emoji:`🌱`,text:`Just want you to know I'm rooting for you. Quietly, from over here, I'm in your corner. Whatever you're working on, whatever you're going through — I believe in you.`},
+  {type:`You came to mind 🌸`,emoji:`🌸`,text:`You crossed my mind today and I just wanted to reach out. Hope you're doing well. Hope something today made you smile. Thinking of you.`},
+  // Inspiring
+  {type:`You're doing amazing 🌟`,emoji:`🌟`,text:`I just need you to know: the growth I've seen in you lately is real. You might not see it from the inside, but from where I'm standing? You're incredible. Keep going.`},
+  {type:`You've got this ⚡`,emoji:`⚡`,text:`Whatever you're in the middle of right now — I believe in you. Not in a bumper sticker way. In a "I've genuinely seen what you're made of" kind of way. You've got this.`},
+  {type:`You inspire me ✨`,emoji:`✨`,text:`Can I tell you something? You inspire me. The way you show up, love people, and keep going even when it's hard — it makes me want to be better. Thank you for that.`},
+  {type:`Your courage is showing 🦁`,emoji:`🦁`,text:`I see you doing the hard thing. I see you choosing growth when it would be easier to stay the same. I just want you to know — it's not going unnoticed. You're brave.`},
+  {type:`Proud of you 🏆`,emoji:`🏆`,text:`I'm just really proud of you. I don't say it enough. But the way you've been showing up lately — it's everything. Don't stop. You're closer than you think.`},
+  {type:`Keep going 🔥`,emoji:`🔥`,text:`Hey. Just a reminder that the version of you that you're becoming is worth every hard moment you're going through to get there. Keep going. It's working.`},
+];
+
+// Rotate 3 messages per day based on day of year
+function getTodaysMessages(){
+  const day=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
+  const total=KIND_MESSAGES.length;
+  const i1=day%total;
+  const i2=(day+Math.floor(total/3))%total;
+  const i3=(day+Math.floor(2*total/3))%total;
+  return[i1,i2,i3].map(i=>({...KIND_MESSAGES[i],origIndex:i}));
+}
+
+function renderRelationships(){
+  if(!DB.relationships)DB.relationships={contacts:[],thinkingOf:'',lastCheckins:{}};
+  const r=DB.relationships;
+  const contacts=r.contacts||[];
+  const dayOfYear=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
+  const tip=COMM_TIPS[dayOfYear%COMM_TIPS.length];
+
+  // Build contact list
+  const contactHtml=contacts.length?contacts.map((c,i)=>{
+    const ini=c.name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const lastCheckin=r.lastCheckins?.[c.name];
+    const freqDays={Daily:1,Weekly:7,Biweekly:14,Monthly:30}[c.frequency]||7;
+    const daysSince=lastCheckin?Math.floor((new Date()-new Date(lastCheckin))/(864e5)):999;
+    const overdue=daysSince>=freqDays;
+    const statusHtml=lastCheckin
+      ?overdue?`<span class="contact-overdue">Overdue · ${daysSince}d ago</span>`
+              :`<span class="contact-ok">✓ Checked in ${daysSince===0?'today':(daysSince+'d ago')}</span>`
+      :`<span class="contact-overdue">Not yet connected</span>`;
+    return`<div class="contact-item">
+      <div class="contact-avatar">${ini}</div>
+      <div class="contact-info">
+        <div class="contact-name">${esc(c.name)}</div>
+        <div class="contact-freq">${c.frequency||'Weekly'}</div>
+        ${statusHtml}
+      </div>
+      <div class="contact-actions">
+        <button class="contact-send-btn" onclick="openKindMessage('${esc(c.name)}')">💌 Send</button>
+        <button class="contact-checkin-btn" onclick="markCheckin('${esc(c.name)}')">✓ Check in</button>
+      </div>
+    </div>`;
+  }).join('')
+  :`<div style="font-size:13px;color:var(--ink4);font-style:italic;padding:8px 0">No contacts added yet — add people you want to stay connected with</div>`;
+
+  const prompts=REL_PROMPTS.map(p=>`<button class="rel-prompt-chip" onclick="useRelPrompt(this)">${p}</button>`).join('');
+
+  const todaysMsgs=getTodaysMessages();
+  const kindCards=todaysMsgs.map((m,i)=>`
+    <div class="kind-msg-card">
+      <div class="kind-msg-type">${m.emoji} ${m.type}</div>
+      <div class="kind-msg-text">${esc(m.text)}</div>
+      <div class="kind-msg-actions">
+        <button class="kind-send-btn send-sms" onclick="sendKindByIndex('sms',${m.origIndex},'')">💬 Text</button>
+        <button class="kind-send-btn send-email" onclick="sendKindByIndex('email',${m.origIndex},'')">📧 Email</button>
+        <button class="kind-send-btn send-copy" onclick="sendKindByIndex('copy',${m.origIndex},'')">📋 Copy</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('viewBody').innerHTML=`
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💡</div>
+        <div><div class="post-title">Daily communication tip</div><div class="post-sub">One thing to practice today</div></div>
+      </div>
+      <div class="post-body">
+        <div class="comm-tip-card">
+          <div class="comm-tip-label">Today's tip</div>
+          <div class="comm-tip-text">${esc(tip)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💬</div>
+        <div><div class="post-title">Relationship reflections</div><div class="post-sub">Tap a prompt to journal on it</div></div>
+      </div>
+      <div class="post-body">
+        <div style="margin-bottom:12px">${prompts}</div>
+        <textarea class="ta" id="rel_journal" placeholder="Reflect freely…" rows="3"></textarea>
+        <div style="height:8px"></div>
+        <button class="primary-btn" style="font-size:13px;padding:11px" onclick="saveRelJournal()">Save reflection</button>
+        <div class="save-confirm" id="relJournalConfirm" style="margin-top:8px">Saved ✦</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">💌</div>
+        <div><div class="post-title">Send something kind</div><div class="post-sub">Choose a message · customize · send</div></div>
+      </div>
+      <div class="post-body">${kindCards}</div>
+    </div>`;
+}
+
+function openAddContact(){
+  openModal(`<div class="modal-handle"></div>
+    <div class="modal-title">Add person</div>
+    <div class="fg"><label class="lbl">Name</label><input class="mi" id="c_name" placeholder="e.g. Sarah, Mom, David…" autofocus></div>
+    <div class="fg"><label class="lbl">How often do you want to connect?</label>
+      <select class="mi" id="c_freq" style="-webkit-appearance:none">
+        <option>Daily</option><option selected>Weekly</option><option>Biweekly</option><option>Monthly</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveContact()">Add</button>
+    </div>`);
+}
+
+function saveContact(){
+  const name=(document.getElementById('c_name').value||'').trim();if(!name)return;
+  const frequency=document.getElementById('c_freq').value;
+  if(!DB.relationships)DB.relationships={contacts:[],thinkingOf:'',lastCheckins:{}};
+  DB.relationships.contacts.push({name,frequency});
+  saveDB('relationships',DB.relationships);closeModal();renderRelationships();
+}
+
+function markCheckin(name){
+  if(!DB.relationships)DB.relationships={contacts:[],thinkingOf:'',lastCheckins:{}};
+  if(!DB.relationships.lastCheckins)DB.relationships.lastCheckins={};
+  DB.relationships.lastCheckins[name]=today();
+  saveDB('relationships',DB.relationships);renderRelationships();
+}
+
+function saveThinkingOf(){
+  if(!DB.relationships)DB.relationships={contacts:[],thinkingOf:'',lastCheckins:{}};
+  DB.relationships.thinkingOf=(document.getElementById('thinking_of').value||'').trim();
+  saveDB('relationships',DB.relationships);
+  const conf=document.getElementById('thinkingConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';},1400);
+}
+
+function saveRelJournal(){
+  const text=(document.getElementById('rel_journal').value||'').trim();if(!text)return;
+  if(!DB.relJournal)DB.relJournal=[];
+  DB.relJournal.unshift({id:Date.now().toString(),date:today(),text});
+  saveDB('relJournal',DB.relJournal);
+  const conf=document.getElementById('relJournalConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';},1400);
+  document.getElementById('rel_journal').value='';
+}
+
+function useRelPrompt(btn){
+  const ta=document.getElementById('rel_journal');if(!ta)return;
+  ta.value=ta.value?ta.value+'\n\n'+btn.textContent+'\n':btn.textContent+'\n';
+  ta.focus();ta.scrollTop=ta.scrollHeight;
+}
+
+function openKindMessage(name){
+  const cards=KIND_MESSAGES.map((m,i)=>`
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">${m.emoji} ${m.type}</div>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:8px">${esc(m.text)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="kind-send-btn send-sms" onclick="sendKindByIndex('sms',${i},'${esc(name)}')">💬 Text</button>
+        <button class="kind-send-btn send-email" onclick="sendKindByIndex('email',${i},'')">📧 Email</button>
+        <button class="kind-send-btn send-copy" onclick="sendKindByIndex('copy',${i},'')">📋 Copy</button>
+      </div>
+    </div>`).join('');
+  openModal(`<div class="modal-handle"></div>
+    <div class="modal-title">Send to ${esc(name)}</div>
+    ${cards}
+    <button class="modal-cancel" onclick="closeModal()" style="width:100%;margin-top:8px">Close</button>`);
+}
+
+function sendKindByIndex(method,index,name){
+  const m=KIND_MESSAGES[index];
+  if(!m)return;
+  sendKind(method,m.text,name||m.type);
+}
+
+function sendKind(method,text,subject){
+  // text comes directly from the JS array — no HTML encoding issues
+  if(method==='sms'){
+    window.location.href='sms:&body='+encodeURIComponent(text);
+  } else if(method==='email'){
+    window.location.href='mailto:?subject='+encodeURIComponent('Hey — thinking of you')+'&body='+encodeURIComponent(text);
+  } else {
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(text).then(()=>showCopyToast()).catch(()=>fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+}
+
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.cssText='position:fixed;left:-9999px;top:50%;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();ta.select();
+  try{document.execCommand('copy');showCopyToast();}catch(e){alert('Tap and hold to copy:\n\n'+text);}
+  document.body.removeChild(ta);
+}
+
+function showCopyToast(){
+  let t=document.getElementById('copyToast');
+  if(!t){
+    t=document.createElement('div');t.id='copyToast';
+    t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;z-index:9999;font-family:Plus Jakarta Sans,sans-serif;pointer-events:none;transition:opacity .3s;opacity:0';
+    t.textContent='Copied to clipboard ✓';
+    document.body.appendChild(t);
+  }
+  t.style.opacity='1';
+  setTimeout(()=>{t.style.opacity='0';},2200);
+}
+
+// ═══════════════ JOURNAL ═══════════════
+const PROMPTS=[
+  'Where do you see yourself one year from today?',
+  'Describe your ideal day in vivid detail.',
+  'What would you do if you knew you could not fail?',
+  'Who is the person you are becoming?',
+  'What does your future self want you to know today?',
+  'What does the life you truly want look like?',
+  'How will you feel when you achieve your greatest goal?',
+  'What would you let go of if you knew something better was coming?',
+  'Describe the version of yourself you are growing into.',
+  'What is already working in your life that you can build on?',
+];
+
+function renderJournal(){
+  const entries=DB.journal||[];
+  let html=`
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">📖</div>
+        <div>
+          <div class="post-title">Journal & Manifest</div>
+          <div class="post-sub">Tap a prompt or write freely</div>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="prompts-scroll">
+          ${PROMPTS.map(p=>`<button class="prompt-chip" onclick="usePrompt(this)">${p}</button>`).join('')}
+        </div>
+        <textarea class="ta" id="journal_inp" placeholder="Write freely… your thoughts, visions, intentions…" rows="5"></textarea>
+        <div style="height:10px"></div>
+        <button class="primary-btn" onclick="saveJournal()">Save entry</button>
+        <div class="save-confirm" id="journalConfirm" style="margin-top:8px">Entry saved ✦</div>
+      </div>
+    </div>`;
+
+  if(entries.length){
+    html+=`<div class="past-label">Past entries</div>`;
+    entries.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="log-date">${fmtShort(e.date)}</div>
+        <div class="log-text">${esc(e.text).replace(/\n/g,'<br>')}</div>
+        <div class="log-foot"><button class="del-btn" onclick="deleteJournal('${e.id}')">Delete</button></div>
+      </div>`;
+    });
+  }
+  document.getElementById('viewBody').innerHTML=html;
+}
+
+function usePrompt(btn){
+  const ta=document.getElementById('journal_inp');if(!ta)return;
+  ta.value=ta.value?ta.value+'\n\n'+btn.textContent+'\n':btn.textContent+'\n';
+  ta.focus();ta.scrollTop=ta.scrollHeight;
+}
+
+function saveJournal(){
+  const text=(document.getElementById('journal_inp').value||'').trim();if(!text)return;
+  if(!DB.journal)DB.journal=[];
+  DB.journal.unshift({id:Date.now().toString(),date:today(),text});
+  saveDB('journal',DB.journal);
+  const conf=document.getElementById('journalConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderJournal();},1200);
+}
+
+function deleteJournal(id){
+  DB.journal=(DB.journal||[]).filter(e=>e.id!==id);
+  saveDB('journal',DB.journal);renderJournal();
+}
+
+// ═══════════════ EVENING ═══════════════
+const NIGHT_PROMPTS=[
+  'What did you learn about yourself today?',
+  'What is 1 thing you learned today?',
+  'What challenged you today — and what did it teach you?',
+  'What did you do today that your future self will thank you for?',
+  'Where did you show up well today?',
+  'What would you do differently if you had today again?',
+  'What is something you are grateful for that you almost missed today?',
+  'What conversation stayed with you today?',
+  'What did today remind you about what matters most?',
+  'How did you grow today, even in a small way?',
+];
+
+function renderEvening(){
+  const entries=DB.evening||[];
+  const dayOfYear=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
+  const nightPrompt=NIGHT_PROMPTS[dayOfYear%NIGHT_PROMPTS.length];
+
+  let html=`
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">🌙</div>
+        <div><div class="post-title">3 good things</div><div class="post-sub">What went well today?</div></div>
+      </div>
+      <div class="post-body">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+          ${[1,2,3].map(n=>`
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">${n}</div>
+            <textarea class="ta" id="good_${n}" placeholder="Something good that happened today…" rows="2" style="flex:1"></textarea>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">✨</div>
+        <div><div class="post-title">Tomorrow</div><div class="post-sub">One thing I'm excited about</div></div>
+      </div>
+      <div class="post-body">
+        <div class="priority-block">
+          <div class="block-prompt">One thing I'm looking forward to tomorrow…</div>
+          <textarea class="ta" id="eve_tomorrow" placeholder="Something to be excited about…" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">📖</div>
+        <div><div class="post-title">Night reflection</div><div class="post-sub">End your day with intention</div></div>
+      </div>
+      <div class="post-body">
+        <div class="mindset-block" style="background:var(--purple-bg);margin-bottom:12px">
+          <div class="mindset-prompt" style="color:var(--purple)">${nightPrompt}</div>
+        </div>
+        <textarea class="ta" id="eve_journal" placeholder="Write freely…" rows="4"></textarea>
+        <div style="height:12px"></div>
+        <button class="primary-btn" onclick="saveEvening()">Save evening check-in</button>
+        <div class="save-confirm" id="eveningConfirm" style="margin-top:8px">Rest well ✦</div>
+      </div>
+    </div>`;
+
+  if(entries.length){
+    html+=`<div class="past-label">Past evenings</div>`;
+    entries.forEach(e=>{
+      html+=`<div class="log-entry">
+        <div class="log-date">${fmtShort(e.date)}</div>
+        ${e.goods&&e.goods.length?`<div style="margin-bottom:6px">${e.goods.map((g,i)=>`<div style="font-size:13px;color:var(--ink2);margin-bottom:3px"><span style="color:var(--purple);font-weight:700">${i+1}.</span> ${esc(g)}</div>`).join('')}</div>`:''}
+        ${e.tomorrow?`<div style="font-size:12px;color:var(--purple);font-weight:600;margin-bottom:4px">Tomorrow: ${esc(e.tomorrow)}</div>`:''}
+        ${e.journal?`<div class="log-text">${esc(e.journal).replace(/\n/g,'<br>')}</div>`:''}
+        <div class="log-foot"><button class="del-btn" onclick="deleteEvening('${e.id}')">Delete</button></div>
+      </div>`;
+    });
+  }
+  document.getElementById('viewBody').innerHTML=html;
+}
+
+function saveEvening(){
+  const good1=(document.getElementById('good_1').value||'').trim();
+  const good2=(document.getElementById('good_2').value||'').trim();
+  const good3=(document.getElementById('good_3').value||'').trim();
+  const tomorrow=(document.getElementById('eve_tomorrow').value||'').trim();
+  const journal=(document.getElementById('eve_journal').value||'').trim();
+  if(!good1&&!good2&&!good3&&!tomorrow&&!journal)return;
+  if(!DB.evening)DB.evening=[];
+  const goods=[good1,good2,good3].filter(g=>g);
+  DB.evening.unshift({id:Date.now().toString(),date:today(),goods,tomorrow,journal});
+  saveDB('evening',DB.evening);
+  const conf=document.getElementById('eveningConfirm');
+  conf.style.opacity='1';setTimeout(()=>{conf.style.opacity='0';renderEvening();},1400);
+}
+
+function deleteEvening(id){
+  DB.evening=(DB.evening||[]).filter(e=>e.id!==id);
+  saveDB('evening',DB.evening);renderEvening();
+}
+
+// ═══════════════ INSPIRE ═══════════════
+const FALLBACK=[
+  {text:`The secret of getting ahead is getting started.`,author:`Mark Twain`},
+  {text:`You are never too old to set another goal or to dream a new dream.`,author:`C.S. Lewis`},
+  {text:`Believe you can and you're halfway there.`,author:`Theodore Roosevelt`},
+  {text:`Everything you've ever wanted is on the other side of fear.`,author:`George Addair`},
+  {text:`The future belongs to those who believe in the beauty of their dreams.`,author:`Eleanor Roosevelt`},
+  {text:`Start where you are. Use what you have. Do what you can.`,author:`Arthur Ashe`},
+  {text:`What you get by achieving your goals is not as important as what you become by achieving them.`,author:`Zig Ziglar`},
+  {text:`The mind is everything. What you think you become.`,author:`Buddha`},
+  {text:`The best time to plant a tree was 20 years ago. The second best time is now.`,author:`Chinese Proverb`},
+  {text:`Act as if what you do makes a difference. It does.`,author:`William James`},
+  {text:`You don't have to be great to start, but you have to start to be great.`,author:`Zig Ziglar`},
+  {text:`Dream big. Start small. Act now.`,author:`Robin Sharma`},
+  {text:`Your life does not get better by chance. It gets better by change.`,author:`Jim Rohn`},
+  {text:`Success is the sum of small efforts repeated day in and day out.`,author:`Robert Collier`},
+  {text:`You have been assigned this mountain to show others it can be moved.`,author:`Mel Robbins`},
+  {text:`The only person you are destined to become is the person you decide to be.`,author:`Ralph Waldo Emerson`},
+  {text:`Don't watch the clock. Do what it does — keep going.`,author:`Sam Levenson`},
+  {text:`It always seems impossible until it's done.`,author:`Nelson Mandela`},
+  {text:`She believed she could, so she did.`,author:`R.S. Grey`},
+  {text:`The comeback is always stronger than the setback.`,author:`Unknown`},
+  {text:`You didn't come this far to only come this far.`,author:`Unknown`},
+  {text:`Be the energy you want to attract.`,author:`Unknown`},
+  {text:`Your only limit is your mind.`,author:`Unknown`},
+  {text:`Do something today that your future self will thank you for.`,author:`Sean Patrick Flanery`},
+  {text:`The harder you work for something, the greater you'll feel when you achieve it.`,author:`Unknown`},
+  {text:`Wake up with determination. Go to bed with satisfaction.`,author:`Unknown`},
+  {text:`Push yourself, because no one else is going to do it for you.`,author:`Unknown`},
+  {text:`Great things never come from comfort zones.`,author:`Unknown`},
+  {text:`Don't stop until you're proud.`,author:`Unknown`},
+  {text:`You are enough. You have enough. You do enough.`,author:`Brené Brown`},
+  {text:`Courage is not the absence of fear — it's deciding something else is more important.`,author:`Ambrose Redmoon`},
+  {text:`You were not made for a small life.`,author:`Unknown`},
+  {text:`The world needs who you were made to be.`,author:`Unknown`},
+  {text:`Every day is a chance to be better than you were yesterday.`,author:`Unknown`},
+  {text:`Own your morning. Elevate your life.`,author:`Robin Sharma`},
+  {text:`The difference between ordinary and extraordinary is that little extra.`,author:`Jimmy Johnson`},
+  {text:`You attract what you are, not what you want. So be what you want to attract.`,author:`Unknown`},
+  {text:`Life is not happening to you. Life is responding to you.`,author:`Unknown`},
+  {text:`Your energy introduces you before you even speak.`,author:`Unknown`},
+  {text:`Discipline is choosing between what you want now and what you want most.`,author:`Augusta F. Kantra`},
+  {text:`Confidence is not "they will like me." Confidence is "I'll be fine if they don't."`,author:`Unknown`},
+  {text:`Stop shrinking yourself to fit places you've outgrown.`,author:`Unknown`},
+  {text:`You are one decision away from a completely different life.`,author:`Mel Robbins`},
+  {text:`What you feed your mind determines your appetite.`,author:`Tom Ziglar`},
+  {text:`The version of you that you're becoming is worth every hard moment.`,author:`Unknown`},
+  {text:`You are the author of your own story. Make it a great one.`,author:`Unknown`},
+  {text:`Small steps in the right direction are still steps in the right direction.`,author:`Unknown`},
+  {text:`The most important relationship you'll ever have is the one you have with yourself.`,author:`Unknown`},
+  {text:`Your life is your message to the world. Make sure it's inspiring.`,author:`Lorrin L. Lee`},
+  {text:`Every morning you have two choices: continue to sleep with your dreams, or wake up and chase them.`,author:`Unknown`},
+  {text:`You don't find the happy life. You make it.`,author:`Camilla Eyring Kimball`},
+  {text:`The cave you fear to enter holds the treasure you seek.`,author:`Joseph Campbell`},
+  {text:`It's not who you are that holds you back, it's who you think you're not.`,author:`Denis Waitley`},
+  {text:`Everything you need is already inside you.`,author:`Unknown`},
+  {text:`Live the life you'd be proud to talk about.`,author:`Unknown`},
+  {text:`Protect your peace like it's your most valuable asset. Because it is.`,author:`Unknown`},
+  {text:`Be so busy building your own life that you have no time to worry about others.`,author:`Unknown`},
+  {text:`One day or day one. You decide.`,author:`Unknown`},
+  {text:`If it doesn't challenge you, it doesn't change you.`,author:`Fred DeVito`},
+  {text:`Gratitude turns what we have into enough.`,author:`Aesop`},
+  {text:`Your habits are your future self in disguise.`,author:`Unknown`},
+  {text:`The best project you'll ever work on is yourself.`,author:`Unknown`},
+];
+
+async function renderInspire(){
+  const day=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
+  // Always show today's daily quote immediately, then try to fetch a fresh one
+  if(!currentQuote){
+    currentQuote=FALLBACK[day%FALLBACK.length];
+  }
+  showQuote();
+  // Try to fetch a fresh one in the background
+  fetchQuote().then(()=>showQuote()).catch(()=>{});
+}
+
+async function fetchQuote(){
+  try{
+    const r=await fetch('https://api.quotable.io/random?tags=inspirational,motivational,success,life&maxLength=160');
+    if(r.ok){const d=await r.json();currentQuote={text:d.content,author:d.author};}
+    else throw new Error();
+  }catch(e){
+    const day=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/(864e5));
+    currentQuote=FALLBACK[day%FALLBACK.length];
+  }
+}
+
+function showQuote(){
+  const quoteText=`"${currentQuote.text}" — ${currentQuote.author}`;
+  document.getElementById('viewBody').innerHTML=`
+    <div class="quote-wrap">
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <div class="quote-text">${esc(currentQuote.text)}</div>
+        <div class="quote-author">— ${esc(currentQuote.author)}</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;justify-content:center">
+        <button onclick="shareQuote('sms')" style="flex:1;max-width:120px;padding:11px 8px;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:#f5f0ff;color:var(--purple);border:1.5px solid var(--purple-mid);border-radius:12px;cursor:pointer;touch-action:manipulation">💬 Text</button>
+        <button onclick="shareQuote('email')" style="flex:1;max-width:120px;padding:11px 8px;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:#f5f0ff;color:var(--purple);border:1.5px solid var(--purple-mid);border-radius:12px;cursor:pointer;touch-action:manipulation">📧 Email</button>
+        <button onclick="shareQuote('copy')" style="flex:1;max-width:120px;padding:11px 8px;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;background:#f5f0ff;color:var(--purple);border:1.5px solid var(--purple-mid);border-radius:12px;cursor:pointer;touch-action:manipulation">📋 Copy</button>
+      </div>
+      <button class="new-quote-btn" onclick="newQuote()">✦ New quote</button>
+    </div>`;
+}
+
+function shareQuote(method){
+  const text=`"${currentQuote.text}" — ${currentQuote.author}`;
+  if(method==='sms'){
+    window.location.href='sms:&body='+encodeURIComponent(text);
+  } else if(method==='email'){
+    window.location.href='mailto:?subject='+encodeURIComponent('Thought you might like this')+
+      '&body='+encodeURIComponent(text+'\n\nSent from daily. — live by design.');
+  } else {
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(text).then(()=>showCopyToast()).catch(()=>fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+}
+
+async function newQuote(){
+  currentQuote=null;
+  await fetchQuote();
+  showQuote();
+}
+
+// Modal
+function openModal(html){
+  let ov=document.getElementById('modal-overlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='modal-overlay';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:flex;align-items:flex-end;justify-content:center';
+    ov.innerHTML='<div id="modal-box" style="background:#fff;border-radius:18px 18px 0 0;padding:24px 20px 40px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto"></div>';
+    ov.addEventListener('click',e=>{if(e.target===ov)closeModal()});
+    document.body.appendChild(ov);
+  }
+  document.getElementById('modal-box').innerHTML=html;
+  ov.style.display='flex';
+}
+function closeModal(){
+  const ov=document.getElementById('modal-overlay');
+  if(ov)ov.style.display='none';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// ── Init ──
+renderTab();
+
+// ── PWA icon + manifest ──
+(function(){
+  function makeIcon(size){
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <rect width="${size}" height="${size}" fill="#ffffff"/>
+      <text x="50%" y="44%" dominant-baseline="middle" text-anchor="middle"
+        font-family="sans-serif" font-size="${Math.round(size*0.38)}px" font-weight="800" fill="#111111" letter-spacing="-2">daily</text>
+      <text x="${Math.round(size*0.86)}%" y="44%" dominant-baseline="middle" text-anchor="middle"
+        font-family="sans-serif" font-size="${Math.round(size*0.42)}px" font-weight="800" fill="#7c4dbe">.</text>
+      <text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle"
+        font-family="sans-serif" font-size="${Math.round(size*0.12)}px" font-weight="400" fill="#737373" letter-spacing="1">live by design</text>
+    </svg>`;
+    return 'data:image/svg+xml;base64,'+btoa(svg);
+  }
+  document.getElementById('appIcon').href=makeIcon(180);
+  const manifest={name:'daily.',short_name:'daily.',description:'live by design.',start_url:'./',display:'standalone',background_color:'#ffffff',theme_color:'#ffffff',orientation:'portrait',icons:[{src:makeIcon(192),sizes:'192x192',type:'image/svg+xml'},{src:makeIcon(512),sizes:'512x512',type:'image/svg+xml'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  document.getElementById('appManifest').href=URL.createObjectURL(blob);
+})();
+</script>
+</body>
+</html>
